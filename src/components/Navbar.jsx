@@ -5,6 +5,7 @@ import {auth} from '../firebase/config'
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { UserCircleIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { useSelector } from 'react-redux';
+import { notifications } from '../utils/notifications';
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
@@ -22,6 +23,7 @@ export default function Navbar() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+      notifications.success('Successfully logged in!');
     } catch (error) {
       console.error('Error signing in:', error);
     }
@@ -30,8 +32,10 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      notifications.info('Successfully logged out');
     } catch (error) {
       console.error('Error signing out:', error);
+      notifications.error('Failed to logout. Please try again.');
     }
   };
 

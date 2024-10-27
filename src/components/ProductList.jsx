@@ -5,6 +5,7 @@ import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQue
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/slices/cartSlice';
 import { StarIcon, FilterIcon } from '@heroicons/react/24/outline';
+import { notifications } from '../utils/notifications';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
@@ -14,8 +15,14 @@ const ProductCard = ({ product }) => {
   });
 
   const addItemToCart = () => {
-    dispatch(addToCart(product));
+    
     // Add toast notification here
+    try {
+      dispatch(addToCart(product));
+      notifications.success(`${product.title} added to cart!`);
+    } catch (error) {
+      notifications.error('Failed to add item to cart');
+    }
   };
 
   return (
