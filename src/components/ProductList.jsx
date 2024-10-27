@@ -1,7 +1,7 @@
 import { useState, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSpring, animated } from '@react-spring/web';
-import { useGetProductsQuery, useGetCategoriesQuery } from '../store/api/productApi';
+import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from '../store/api/productApi';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/slices/cartSlice';
 import { StarIcon, FilterIcon } from '@heroicons/react/24/outline';
@@ -79,12 +79,15 @@ const ProductCard = ({ product }) => {
   );
 };
 
-const FilterSidebar = ({ categories, selectedCategory, onSelectCategory, onClose }) => (
+const me = ()=>{
+  
+}
+const FilterSidebar = ({ categories, selectedCategory, onSelectCategory, setShowFilters, onClose }) => (
   <div className="w-64 bg-white p-4 border-r">
     <h2 className="text-lg font-semibold mb-4">Categories</h2>
     <div className="space-y-2">
       <button
-        onClick={() => onSelectCategory('all')}
+        onClick={() => {onSelectCategory('all'); setShowFilters(false)}}
         className={`w-full text-left px-4 py-2 rounded-md ${
           selectedCategory === 'all' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'
         }`}
@@ -94,7 +97,7 @@ const FilterSidebar = ({ categories, selectedCategory, onSelectCategory, onClose
       {categories?.map((category,i) => (
         <button
           key={i}
-          onClick={() => onSelectCategory(category)}
+          onClick={() => {onSelectCategory(category); setShowFilters(false)}}
           className={`w-full text-left px-4 py-2 rounded-md ${
             selectedCategory === category ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'
           }`}
@@ -111,6 +114,7 @@ export default function ProductList() {
   const [showFilters, setShowFilters] = useState(false);
   const { data: products, isLoading } = useGetProductsQuery();
   const { data: categories } = useGetCategoriesQuery();
+  const { data: categoriesQuery } = useGetProductsByCategoryQuery(selectedCategory.slug);
   const [sortBy, setSortBy] = useState('default');
   console.log(categories);
   if (isLoading) {
@@ -120,10 +124,10 @@ export default function ProductList() {
       </div>
     );
   }
-
+  console.log(selectedCategory)
   const filteredProducts = selectedCategory === 'all' 
     ? products.products
-    : products.products.filter(product => product.category === selectedCategory);
+    : categoriesQuery.products;
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
@@ -158,6 +162,12 @@ export default function ProductList() {
             className="md:hidden bg-gray-100 p-2 rounded-md"
           >
             {/* <FilterIcon className="h-6 w-6" /> */}
+           
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+</svg>
+
+
             
           </button>
         </div>
@@ -176,6 +186,7 @@ export default function ProductList() {
                 categories={categories}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
+                setShowFilters={setShowFilters}
                 onClose={() => setShowFilters(false)}
               />
             </motion.div>
@@ -187,6 +198,7 @@ export default function ProductList() {
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
+            setShowFilters={setShowFilters}
           />
         </div>
 

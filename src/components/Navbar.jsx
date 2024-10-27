@@ -40,11 +40,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-8">
-            <Link to="/" className="text-xl font-bold text-gray-800">
+            <Link to="/" className="text-xl font-bold text-gray-800 hidden md:block">
               Your Logo
             </Link>
             
-            <div className="hidden md:flex space-x-4">
+            <div className=" md:flex space-x-4">
              
               <NavLink
                 to="/"
