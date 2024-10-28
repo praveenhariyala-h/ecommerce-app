@@ -43,7 +43,7 @@ A feature-rich e-commerce platform built with React, Firebase, and Redux Toolkit
 
 Clone the repository:
 
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/praveenhariyala-h/ecommerce-app.git
 
 In the project directory, you can run:
 
